@@ -46,6 +46,16 @@ func (s *Server) Run() error {
 	if domain := s.Conf.Auth.Session.CookieDomain; domain != "" {
 		cookieStore.Options(sessions.Options{Domain: domain})
 	}
+	if cookie := s.Conf.Auth.Session.Cookie; cookie != nil {
+		cookieStore.Options(sessions.Options{
+			Path:     cookie.Path,
+			Domain:   cookie.Domain,
+			MaxAge:   cookie.MaxAge,
+			Secure:   cookie.Secure,
+			HttpOnly: cookie.HttpOnly,
+		})
+	}
+
 	m.Use(sessions.Sessions("session", cookieStore))
 
 	if s.Conf.Auth.Info.Service != noAuthServiceName {
